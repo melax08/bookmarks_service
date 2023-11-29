@@ -4,14 +4,6 @@ from core.models import BaseModel
 
 User = get_user_model()
 
-LINK_TYPES = (
-    ('WS', 'website'),
-    ('BK', 'book'),
-    ('AR', 'article'),
-    ('MC', 'music'),
-    ('VD', 'video'),
-)
-
 
 class Collection(BaseModel):
     """Collections model."""
@@ -27,6 +19,7 @@ class Collection(BaseModel):
     class Meta:
         verbose_name = 'Коллекция закладок'
         verbose_name_plural = 'Коллекции закладок'
+        ordering = ['-creation_date']
 
     def __str__(self):
         return f'Коллекция закладок: {self.title}'
@@ -34,6 +27,13 @@ class Collection(BaseModel):
 
 class Bookmark(BaseModel):
     """Bookmark model."""
+
+    class LinkType(models.TextChoices):
+        website = 'WS'
+        book = 'BK'
+        article = 'AR'
+        music = 'MC'
+        video = 'VD'
 
     author = models.ForeignKey(
         User,
@@ -44,7 +44,7 @@ class Bookmark(BaseModel):
     title = models.TextField('Заголовок страницы', null=True, blank=True)
     link = models.URLField('Ссылка на страницу', max_length=512)
     link_type = models.CharField(
-        'Тип ссылки', max_length=2, choices=LINK_TYPES, default='WS'
+        'Тип ссылки', max_length=2, choices=LinkType.choices, default='WS'
     )
     image = models.ImageField(
         'Картинка превью',
@@ -62,6 +62,7 @@ class Bookmark(BaseModel):
     class Meta:
         verbose_name = 'Закладка'
         verbose_name_plural = 'Закладки'
+        ordering = ['-change_date', '-creation_date']
 
     def __str__(self):
         return f'Закладка: {self.title}'
@@ -84,8 +85,8 @@ class CollectionBookmark(models.Model):
     )
 
     class Meta:
-        verbose_name = 'Коллекция для закладки'
-        verbose_name_plural = 'Коллекции для закладок'
+        verbose_name = 'Коллекция связана с закладкой'
+        verbose_name_plural = 'Коллекции связанные с закладками'
 
     def __str__(self):
         return (

@@ -6,10 +6,16 @@ from rest_framework.serializers import ValidationError
 from django.utils import timezone
 
 from bookmarks.models import Collection, Bookmark, CollectionBookmark
-from .serializers import CollectionSerializer, BookmarkSerializer
+from .serializers import BookmarkCreateSerializer, BookmarkListRetrieveSerializer, CollectionSerializer, CollectionListSerializer
+from .tasks import collect_link_information
 
 
 class BaseViewSet(ModelViewSet):
+    """
+    Base ViewSet with implemented get_queryset, perform_create
+    and perform_update methods. Only for inheritance.
+    """
+
     model = ...
 
     def get_queryset(self):
@@ -27,8 +33,20 @@ class BaseViewSet(ModelViewSet):
 
 
 class CollectionViewSet(BaseViewSet):
-    serializer_class = CollectionSerializer
+    """
+    ViewSet working with Collection model.
+    Extra actions:
+    - add_bookmark - to add a bookmark to the collection.
+    - delete_bookmark - to delete a bookmark from the collection.
+    """
+
     model = Collection
+
+    def get_serializer_class(self):
+        if self.action in ('create', 'list'):
+            return CollectionListSerializer
+
+        return CollectionSerializer
 
     @action(detail=True, methods=['post'])
     def add_bookmark(self, request, pk=None):
@@ -42,6 +60,9 @@ class CollectionViewSet(BaseViewSet):
                 collection=collection,
                 bookmark=bookmark
             )
+
+            self._update_change_time(collection, bookmark)
+
             return Response(
                 self.get_serializer(collection).data,
                 status=status.HTTP_201_CREATED
@@ -60,6 +81,9 @@ class CollectionViewSet(BaseViewSet):
             collection=collection, bookmark=bookmark)
         if bookmark_in_collection.exists():
             bookmark_in_collection.first().delete()
+
+            self._update_change_time(collection, bookmark)
+
             return Response(
                 self.get_serializer(collection).data,
                 status=status.HTTP_200_OK
@@ -69,7 +93,11 @@ class CollectionViewSet(BaseViewSet):
             {'bookmark_id': 'Данная закладка отсутствует в коллекции'}
         )
 
-    def _get_bookmark(self, request):
+    @staticmethod
+    def _get_bookmark(request):
+        """Validate the bookmark_id request data parameter
+        and return a Bookmark object."""
+
         bookmark_id = request.data.get('bookmark_id')
 
         if bookmark_id is None or not isinstance(bookmark_id, int):
@@ -84,12 +112,28 @@ class CollectionViewSet(BaseViewSet):
             )
         return bookmark.first()
 
+    @staticmethod
+    def _update_change_time(*args):
+        """Update change_date field to current time for specified objects."""
+        for obj in args:
+            obj.change_date = timezone.now()
+            obj.save()
+
 
 class BookmarkViewSet(BaseViewSet):
-    serializer_class = BookmarkSerializer
+    """ViewSet working with Bookmark model."""
+
     model = Bookmark
     http_method_names = ['get', 'post', 'delete']
 
+    def get_serializer_class(self):
+        if self.action == 'create':
+            return BookmarkCreateSerializer
+
+        return BookmarkListRetrieveSerializer
+
     def perform_create(self, serializer):
         super().perform_create(serializer)
-        ...  # Тут добавление задачи по извлечению информации из URL в очередь
+        collect_link_information.delay(
+            serializer.data.get('id'), serializer.data.get('link')
+        )
