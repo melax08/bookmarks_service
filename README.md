@@ -28,9 +28,8 @@
 [![Postgres][Postgres-badge]][Postgres-url]
 [![Nginx][Nginx-badge]][Nginx-url]
 [![Docker][Docker-badge]][Docker-url]
-celery
-redis
-
+[![Redis][Redis-badge]][Redis-url]
+[![Celery][Celery-badge]][Celery-url]
 
 ### Автор проекта
 
@@ -122,3 +121,7 @@ docker compose up -d
 [Nginx-badge]: https://img.shields.io/badge/nginx-009900?style=for-the-badge&logo=nginx&logoColor=white
 [Docker-url]: https://www.docker.com
 [Docker-badge]: https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white
+[Redis-badge]: https://img.shields.io/badge/redis-%23DD0031.svg?style=for-the-badge&logo=redis&logoColor=white
+[Redis-url]: https://redis.io/
+[Celery-badge]: https://img.shields.io/badge/Celery-37814A.svg?style=for-the-badge&logo=Celery&logoColor=white
+[Celery-url]: https://docs.celeryq.dev/en/stable/

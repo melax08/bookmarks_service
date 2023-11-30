@@ -36,7 +36,8 @@ class CustomUserManager(UserManager):
 
 class User(AbstractUser):
     """Custom user model with required unique email field and without username field."""
-    USERNAME_FIELD = 'email'
+
+    USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
     objects = CustomUserManager()
 

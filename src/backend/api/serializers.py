@@ -8,25 +8,24 @@ class BookmarkCreateSerializer(serializers.ModelSerializer):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        user_collections = Collection.objects.select_related('author').filter(
-            author=self._user)
-        self.fields['collections'] = serializers.PrimaryKeyRelatedField(
-            many=True,
-            queryset=user_collections,
-            required=False
+        user_collections = Collection.objects.select_related("author").filter(
+            author=self._user
+        )
+        self.fields["collections"] = serializers.PrimaryKeyRelatedField(
+            many=True, queryset=user_collections, required=False
         )
 
     @property
     def _user(self):
         """Get request user from request context."""
-        request = self.context.get('request', None)
+        request = self.context.get("request", None)
         if request:
             return request.user
 
     class Meta:
         model = Bookmark
-        fields = ('id', 'link', 'collections', 'creation_date', 'change_date')
-        read_only_fields = ('creation_date', 'change_date')
+        fields = ("id", "link", "collections", "creation_date", "change_date")
+        read_only_fields = ("creation_date", "change_date")
 
 
 class BookmarkListRetrieveSerializer(serializers.ModelSerializer):
@@ -34,7 +33,7 @@ class BookmarkListRetrieveSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Bookmark
-        exclude = ('author',)
+        exclude = ("author",)
 
 
 class BookmarkInCollectionSerializer(serializers.ModelSerializer):
@@ -42,21 +41,22 @@ class BookmarkInCollectionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Bookmark
-        exclude = ('author', 'collections')
+        exclude = ("author", "collections")
 
 
 class CollectionListSerializer(serializers.ModelSerializer):
     """Collection model serializer for the `list` and `create` actions."""
+
     author = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
         model = Collection
         fields = "__all__"
-        read_only_fields = ('creation_date', 'change_date')
+        read_only_fields = ("creation_date", "change_date")
         validators = [
             serializers.UniqueTogetherValidator(
-                queryset=Collection.objects.select_related('author').all(),
-                fields=('author', 'title')
+                queryset=Collection.objects.select_related("author").all(),
+                fields=("author", "title"),
             )
         ]
 
@@ -68,5 +68,5 @@ class CollectionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Collection
-        exclude = ('author',)
-        read_only_fields = ('creation_date', 'change_date', 'bookmarks')
+        exclude = ("author",)
+        read_only_fields = ("creation_date", "change_date", "bookmarks")

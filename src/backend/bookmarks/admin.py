@@ -8,13 +8,13 @@ class CollectionInlineAdmin(admin.TabularInline):
 
 
 class BookmarkAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'title', 'description', 'link', 'link_type', 'author')
-    list_filter = ('author', 'link_type')
+    list_display = ("pk", "title", "description", "link", "link_type", "author")
+    list_filter = ("author", "link_type")
     inlines = [CollectionInlineAdmin]
 
 
 class CollectionAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'title', 'description', 'author')
+    list_display = ("pk", "title", "description", "author")
 
 
 admin.site.register(Bookmark, BookmarkAdmin)

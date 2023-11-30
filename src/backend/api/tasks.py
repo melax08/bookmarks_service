@@ -15,8 +15,8 @@ def collect_link_information(bookmark_id, link):
         link_information = get_information_from_link(link)
         bookmark = Bookmark.objects.get(pk=bookmark_id)
 
-        link_type = link_information.pop('link_type', None)
-        image_url = link_information.pop('image', None)
+        link_type = link_information.pop("link_type", None)
+        image_url = link_information.pop("image", None)
 
         try:
             bookmark.link_type = bookmark.LinkType[link_type].value
@@ -32,4 +32,4 @@ def collect_link_information(bookmark_id, link):
         bookmark.update_change_date()
 
     except Bookmark.DoesNotExist:
-        logging.info('Trying to access to the nonexistent model object.')
+        logging.info("Trying to access to the nonexistent model object.")

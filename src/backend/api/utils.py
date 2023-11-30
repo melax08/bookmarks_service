@@ -16,16 +16,15 @@ def get_information_from_link(link):
         page = metadata_parser.MetadataParser(url=link)
         metadata = page.metadata
         return {
-            'title': (
-                    metadata.get('og').get('title')
-                    or metadata.get('page').get('title')
+            "title": (
+                metadata.get("og").get("title") or metadata.get("page").get("title")
             ),
-            'description': (
-                    metadata.get('og').get('description')
-                    or metadata.get('meta').get('description')
+            "description": (
+                metadata.get("og").get("description")
+                or metadata.get("meta").get("description")
             ),
-            'link_type': metadata.get('og').get('type') or None,
-            'image': metadata.get('og').get('image') or None,
+            "link_type": metadata.get("og").get("type") or None,
+            "image": metadata.get("og").get("image") or None,
         }
     except metadata_parser.NotParsableFetchError:
         return {}
@@ -43,7 +42,7 @@ def save_image_from_url(obj, url):
 
         Image.open(temp_img)
 
-        ext = urlparse(url).path.split('.')[-1]
-        obj.image.save(f'{get_random_string(length=32)}.{ext}', File(temp_img))
+        ext = urlparse(url).path.split(".")[-1]
+        obj.image.save(f"{get_random_string(length=32)}.{ext}", File(temp_img))
     except (ValueError, urllib.error.URLError, UnidentifiedImageError):
         logging.info(f"There is something wrong with the image in the link: {url}")
