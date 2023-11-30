@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.db import models
 
 
@@ -10,3 +11,8 @@ class BaseModel(models.Model):
 
     class Meta:
         abstract = True
+
+    def update_change_date(self):
+        """Update change datetime to current datetime."""
+        self.change_date = timezone.now()
+        self.save()

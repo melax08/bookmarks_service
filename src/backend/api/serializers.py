@@ -4,6 +4,7 @@ from bookmarks.models import Bookmark, Collection
 
 
 class BookmarkCreateSerializer(serializers.ModelSerializer):
+    """Bookmark model serializer for the `create` action."""
 
     class Meta:
         model = Bookmark
@@ -12,6 +13,7 @@ class BookmarkCreateSerializer(serializers.ModelSerializer):
 
 
 class BookmarkListRetrieveSerializer(serializers.ModelSerializer):
+    """Bookmark model serializer for the `retrieve` and `list` actions."""
 
     class Meta:
         model = Bookmark
@@ -19,6 +21,7 @@ class BookmarkListRetrieveSerializer(serializers.ModelSerializer):
 
 
 class BookmarkInCollectionSerializer(serializers.ModelSerializer):
+    """Nested Bookmark model serializer for collection views."""
 
     class Meta:
         model = Bookmark
@@ -26,14 +29,24 @@ class BookmarkInCollectionSerializer(serializers.ModelSerializer):
 
 
 class CollectionListSerializer(serializers.ModelSerializer):
+    """Collection model serializer for the `list` and `create` actions."""
+    author = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
         model = Collection
-        exclude = ('author',)
+        fields = "__all__"
         read_only_fields = ('creation_date', 'change_date')
+        validators = [
+            serializers.UniqueTogetherValidator(
+                queryset=Collection.objects.all(),
+                fields=('author', 'title')
+            )
+        ]
 
 
 class CollectionSerializer(serializers.ModelSerializer):
+    """Collection model serializer with bookmarks field."""
+
     bookmarks = BookmarkInCollectionSerializer(read_only=True, many=True)
 
     class Meta:

@@ -6,7 +6,8 @@ from rest_framework.serializers import ValidationError
 from django.utils import timezone
 
 from bookmarks.models import Collection, Bookmark, CollectionBookmark
-from .serializers import BookmarkCreateSerializer, BookmarkListRetrieveSerializer, CollectionSerializer, CollectionListSerializer
+from .serializers import (BookmarkCreateSerializer, BookmarkListRetrieveSerializer,
+                          CollectionSerializer, CollectionListSerializer)
 from .tasks import collect_link_information
 
 
@@ -116,8 +117,7 @@ class CollectionViewSet(BaseViewSet):
     def _update_change_time(*args):
         """Update change_date field to current time for specified objects."""
         for obj in args:
-            obj.change_date = timezone.now()
-            obj.save()
+            obj.update_change_date()
 
 
 class BookmarkViewSet(BaseViewSet):

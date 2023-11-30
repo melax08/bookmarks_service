@@ -6,6 +6,9 @@ from .utils import get_information_from_link
 
 @shared_task
 def collect_link_information(bookmark_id, link):
+    """Celery task, get information about specified link and save collected
+    information to model object."""
+
     link_information = get_information_from_link(link)
     bookmark = Bookmark.objects.get(pk=bookmark_id)
 
@@ -17,4 +20,5 @@ def collect_link_information(bookmark_id, link):
 
     for field, value in link_information.items():
         setattr(bookmark, field, value)
-    bookmark.save()
+
+    bookmark.update_change_date()

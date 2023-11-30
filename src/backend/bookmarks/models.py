@@ -20,6 +20,12 @@ class Collection(BaseModel):
         verbose_name = 'Коллекция закладок'
         verbose_name_plural = 'Коллекции закладок'
         ordering = ['-creation_date']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['author', 'title'],
+                name='unique_collection_title'
+            )
+        ]
 
     def __str__(self):
         return f'Коллекция закладок: {self.title}'
@@ -62,7 +68,7 @@ class Bookmark(BaseModel):
     class Meta:
         verbose_name = 'Закладка'
         verbose_name_plural = 'Закладки'
-        ordering = ['-change_date', '-creation_date']
+        ordering = ['-creation_date']
 
     def __str__(self):
         return f'Закладка: {self.title}'
