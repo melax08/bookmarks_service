@@ -8,7 +8,8 @@ class BookmarkCreateSerializer(serializers.ModelSerializer):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        user_collections = Collection.objects.filter(author=self._user)
+        user_collections = Collection.objects.select_related('author').filter(
+            author=self._user)
         self.fields['collections'] = serializers.PrimaryKeyRelatedField(
             many=True,
             queryset=user_collections,
@@ -54,7 +55,7 @@ class CollectionListSerializer(serializers.ModelSerializer):
         read_only_fields = ('creation_date', 'change_date')
         validators = [
             serializers.UniqueTogetherValidator(
-                queryset=Collection.objects.all(),
+                queryset=Collection.objects.select_related('author').all(),
                 fields=('author', 'title')
             )
         ]

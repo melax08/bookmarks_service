@@ -28,7 +28,9 @@ INSTALLED_APPS = [
     'core.apps.CoreConfig',
     'users.apps.UsersConfig',
     'bookmarks.apps.BookmarksConfig',
+    'drf_yasg',
     'api.apps.ApiConfig',
+    'rest_framework.authtoken',
     'rest_framework',
     'djoser'
 ]
@@ -124,7 +126,7 @@ REST_FRAMEWORK = {
     ],
 
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
     ],
 }
 
@@ -133,10 +135,15 @@ DJOSER = {
     "HIDE_USERS": True,
 }
 
-SIMPLE_JWT = {
-   'ACCESS_TOKEN_LIFETIME': timedelta(days=7),
-   'AUTH_HEADER_TYPES': ('Bearer',),
-}
-
 CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', default="redis://localhost:6379")
 CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND', default="redis://localhost:6379")
+
+SWAGGER_SETTINGS = {
+   'SECURITY_DEFINITIONS': {
+      'Token': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+      }
+   }
+}

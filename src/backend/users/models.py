@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy as _
 
 
 class CustomUserManager(UserManager):
+    """Custom user manager, removed username from main methods."""
 
     def _create_user(self, email, password, **extra_fields):
         """Create and save a user with the given email and password."""
