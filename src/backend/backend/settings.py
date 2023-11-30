@@ -13,6 +13,8 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", default=get_random_secret_key())
 
 DEBUG = int(os.getenv('DJANGO_DEBUG', default=0))
 
+PROD = int(os.getenv('PROD', default=0))
+
 ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", default="*").split()
 
 
@@ -61,13 +63,24 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if PROD:
+    DATABASES = {
+        "default": {
+            "ENGINE": os.getenv("DB_ENGINE", default="django.db.backends.postgresql"),
+            "NAME": os.getenv("DB_NAME", default="postgres"),
+            "USER": os.getenv("POSTGRES_USER", default="postgres"),
+            "PASSWORD": os.getenv("POSTGRES_PASSWORD", default="postgres"),
+            "HOST": os.getenv("DB_HOST", default="db"),
+            "PORT": os.getenv("DB_PORT", default="5432"),
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -88,7 +101,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'ru-ru'
 
-TIME_ZONE = 'Europe/Moscow'
+TIME_ZONE = os.getenv('TZ', default='Europe/Moscow')
 
 USE_I18N = True
 
@@ -96,6 +109,10 @@ USE_TZ = True
 
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / "static"
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 

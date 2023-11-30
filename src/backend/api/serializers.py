@@ -6,6 +6,22 @@ from bookmarks.models import Bookmark, Collection
 class BookmarkCreateSerializer(serializers.ModelSerializer):
     """Bookmark model serializer for the `create` action."""
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        user_collections = Collection.objects.filter(author=self._user)
+        self.fields['collections'] = serializers.PrimaryKeyRelatedField(
+            many=True,
+            queryset=user_collections,
+            required=False
+        )
+
+    @property
+    def _user(self):
+        """Get request user from request context."""
+        request = self.context.get('request', None)
+        if request:
+            return request.user
+
     class Meta:
         model = Bookmark
         fields = ('id', 'link', 'collections', 'creation_date', 'change_date')
