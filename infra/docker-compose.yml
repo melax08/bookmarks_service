@@ -36,6 +36,9 @@ services:
       - ../.env
     depends_on:
       - bookmarks_backend
+    volumes:
+      - static_volume:/app/static
+      - media_volume:/app/media
   nginx:
     image: nginx:1.23.4-alpine
     ports:
