@@ -1,4 +1,5 @@
 from drf_yasg import openapi
+
 from .serializers import CollectionSerializer
 
 add_new_bookmark_description = "Add a new bookmark"

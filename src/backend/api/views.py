@@ -1,26 +1,26 @@
-from django.utils.decorators import method_decorator
-from rest_framework.decorators import action
-from rest_framework.viewsets import ModelViewSet
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.serializers import ValidationError
+from bookmarks.models import Bookmark, Collection, CollectionBookmark
 from django.utils import timezone
+from django.utils.decorators import method_decorator
 from drf_yasg.utils import swagger_auto_schema
+from rest_framework import status
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework.serializers import ValidationError
+from rest_framework.viewsets import ModelViewSet
 
-from bookmarks.models import Collection, Bookmark, CollectionBookmark
+from .open_api import (
+    add_bookmark_responses,
+    add_delete_bookmark_collection_body,
+    add_new_bookmark_description,
+    delete_bookmark_response,
+)
 from .serializers import (
     BookmarkCreateSerializer,
     BookmarkListRetrieveSerializer,
-    CollectionSerializer,
     CollectionListSerializer,
+    CollectionSerializer,
 )
 from .tasks import collect_link_information
-from .open_api import (
-    add_delete_bookmark_collection_body,
-    add_bookmark_responses,
-    delete_bookmark_response,
-    add_new_bookmark_description,
-)
 
 
 class BaseViewSet(ModelViewSet):

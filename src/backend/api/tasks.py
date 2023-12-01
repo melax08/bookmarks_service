@@ -1,8 +1,8 @@
 import logging
 
+from bookmarks.models import Bookmark
 from celery import shared_task
 
-from bookmarks.models import Bookmark
 from .utils import get_information_from_link, save_image_from_url
 
 

@@ -8,6 +8,13 @@
 
 Различные эндпоинты: http://194.76.46.5/api/
 
+Настроен троттлинг со следующими параметрами:
+
+```shell
+"user": "200/hour",
+"anon": "100/hour",
+```
+
 После регистрации в сервисе пользователь может создавать различные коллекции в которые будет добавлять свои закладки.
 Одна и та же закладка может быть в одной или нескольких коллекциях сразу. Либо быть без коллекции. Для закладок подгружается информация из og и meta HTML-тегов предоставленной страницы.
 
@@ -30,6 +37,7 @@
 [![Docker][Docker-badge]][Docker-url]
 [![Redis][Redis-badge]][Redis-url]
 [![Celery][Celery-badge]][Celery-url]
+[![Poetry][Poetry-badge]][Poetry-url]
 
 ### Автор проекта
 
@@ -87,11 +95,41 @@ docker-compose up -d
 docker compose up -d
 ```
 
+<details><summary>Создание суперпользователя</summary>
+
+<br>
+
+Если вы хотите создать `суперпользователя Django` в запущенном проекте, используйте команду:
+
+```shell
+docker compose exec bookmarks_backend python manage.py createsuperuser
+```
+
+Команду необходимо использовать в каталоге `infra`.
+
+</details>
+
 ### Примеры использования
 
 Сразу после запуска, API документация проекта со всеми эндпоинтами будет доступна по ссылке: http://127.0.0.1/swagger/
 
 Вместо 127.0.0.1 - нужно подставить домен или IP-адрес вашего сайта.
+
+### Информация для разработчиков
+
+1. Для локальной разработки проекта необходимо установить `Poetry`, [инструкция в официальной документации](https://python-poetry.org/docs/#installation).
+
+2. Установку зависимостей проекта локально можно осуществить с помощью команды:
+
+```shell
+poetry install
+```
+
+3. Для автоматического применения `black`, `isort`, `flake8` и других хуков при использовании `git commit`, необходимо активировать `pre-commit`:
+
+```shell
+pre-commit install
+```
 
 ### Что еще не было реализовано
 
@@ -125,3 +163,5 @@ docker compose up -d
 [Redis-url]: https://redis.io/
 [Celery-badge]: https://img.shields.io/badge/Celery-37814A.svg?style=for-the-badge&logo=Celery&logoColor=white
 [Celery-url]: https://docs.celeryq.dev/en/stable/
+[Poetry-url]: https://python-poetry.org
+[Poetry-badge]: https://img.shields.io/badge/poetry-blue?style=for-the-badge&logo=Poetry&logoColor=white&link=https%3A%2F%2Fpython-poetry.org

@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Bookmark, CollectionBookmark, Collection
+from .models import Bookmark, Collection, CollectionBookmark
 
 
 class CollectionInlineAdmin(admin.TabularInline):

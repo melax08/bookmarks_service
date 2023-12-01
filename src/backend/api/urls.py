@@ -1,7 +1,7 @@
-from rest_framework.routers import DefaultRouter
 from django.urls import include, path
+from rest_framework.routers import DefaultRouter
 
-from .views import CollectionViewSet, BookmarkViewSet
+from .views import BookmarkViewSet, CollectionViewSet
 
 app_name = "api"
 

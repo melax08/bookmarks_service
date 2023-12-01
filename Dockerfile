@@ -5,11 +5,15 @@ ENV PYTHONUNBUFFERED 1
 
 WORKDIR /app
 
+COPY pyproject.toml poetry.lock ./
+
+RUN pip3 install --upgrade pip
+RUN pip3 install poetry --no-cache-dir
+RUN poetry config virtualenvs.create false && poetry install --no-root --no-directory --no-dev --no-interaction --no-ansi
+
 COPY src/backend ./
 
-COPY entrypoint_server.sh entrypoint_worker.sh .env requirements.txt ./
-
-RUN pip3 install -r ./requirements.txt --no-cache-dir
+COPY entrypoint_server.sh entrypoint_worker.sh .env ./
 
 RUN chmod +x entrypoint_server.sh
 RUN chmod +x entrypoint_worker.sh

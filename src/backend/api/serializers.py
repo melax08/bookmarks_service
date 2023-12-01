@@ -1,6 +1,5 @@
-from rest_framework import serializers
-
 from bookmarks.models import Bookmark, Collection
+from rest_framework import serializers
 
 
 class BookmarkCreateSerializer(serializers.ModelSerializer):

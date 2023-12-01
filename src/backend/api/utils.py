@@ -1,12 +1,12 @@
 import logging
 import urllib.error
 from tempfile import NamedTemporaryFile
+from urllib.parse import urlparse
+from urllib.request import urlopen
 
 import metadata_parser
 from django.core.files import File
-from urllib.request import urlopen
 from django.utils.crypto import get_random_string
-from urllib.parse import urlparse
 from PIL import Image, UnidentifiedImageError
 
 
