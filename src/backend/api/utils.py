@@ -43,6 +43,8 @@ def save_image_from_url(obj, url):
         Image.open(temp_img)
 
         ext = urlparse(url).path.split(".")[-1]
-        obj.image.save(f"{get_random_string(length=32)}.{ext}", File(temp_img))
+        obj.image.save(
+            f"{get_random_string(length=32)}.{ext}", File(temp_img), save=False
+        )
     except (ValueError, urllib.error.URLError, UnidentifiedImageError):
         logging.info(f"There is something wrong with the image in the link: {url}")

@@ -9,7 +9,7 @@ from .utils import get_information_from_link, save_image_from_url
 @shared_task
 def collect_link_information(bookmark_id, link):
     """Celery task, get information about specified link and save collected
-    information to model object."""
+    information to the model object."""
 
     try:
         link_information = get_information_from_link(link)
@@ -29,7 +29,10 @@ def collect_link_information(bookmark_id, link):
         for field, value in link_information.items():
             setattr(bookmark, field, value)
 
+        if not Bookmark.objects.filter(pk=bookmark.id).exists():
+            raise Bookmark.DoesNotExist
+
         bookmark.update_change_date()
 
     except Bookmark.DoesNotExist:
-        logging.info("Trying to access to the nonexistent model object.")
+        logging.debug("Trying to access to the nonexistent model object.")
