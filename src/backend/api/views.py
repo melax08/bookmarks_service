@@ -48,7 +48,7 @@ class CollectionViewSet(BaseViewSet):
         return (
             Collection.objects.select_related("author")
             .prefetch_related("collection_bookmarks")
-            .filter(author=self.request.user)
+            .filter(author=self.request.user.id)
         )
 
     def get_serializer_class(self):
@@ -150,7 +150,7 @@ class BookmarkViewSet(BaseViewSet):
         return (
             Bookmark.objects.select_related("author")
             .prefetch_related("bookmark_collections")
-            .filter(author=self.request.user)
+            .filter(author=self.request.user.id)
         )
 
     def get_serializer_class(self):
